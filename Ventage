@@ -1,0 +1,285 @@
+
+------------------------------------------------------------------------------------------------
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Ventage", "Midnight")
+
+local Tab = Window:NewTab("Main")
+local Section1= Tab:NewSection("MainScripts.")
+local Tab = Window:NewTab("Aimlock")
+local Section2= Tab:NewSection("ALEX !#1894.")
+--[Fly]--
+Section1:NewButton("Fly[X]", "Makes u fly!", function()
+    local plr = game.Players.LocalPlayer
+local mouse = plr:GetMouse()
+
+		localplayer = plr
+		
+		if workspace:FindFirstChild("Core") then
+			workspace.Core:Destroy()
+		end
+		
+		local Core = Instance.new("Part")
+		Core.Name = "Core"
+		Core.Size = Vector3.new(0.05, 0.05, 0.05)
+
+		spawn(function()
+			Core.Parent = workspace
+			local Weld = Instance.new("Weld", Core)
+			Weld.Part0 = Core
+			Weld.Part1 = localplayer.Character.LowerTorso
+			Weld.C0 = CFrame.new(0, 0, 0)
+		end)
+		
+		workspace:WaitForChild("Core")
+		
+		local torso = workspace.Core
+		flying = true
+		local speed=10
+		local keys={a=false,d=false,w=false,s=false} 
+		local e1
+		local e2
+		local function start()
+			local pos = Instance.new("BodyPosition",torso)
+			local gyro = Instance.new("BodyGyro",torso)
+			pos.Name="EPIXPOS"
+			pos.maxForce = Vector3.new(math.huge, math.huge, math.huge)
+			pos.position = torso.Position
+			gyro.maxTorque = Vector3.new(9e9, 9e9, 9e9) 
+			gyro.cframe = torso.CFrame
+			repeat
+				wait()
+				localplayer.Character.Humanoid.PlatformStand=true
+				local new=gyro.cframe - gyro.cframe.p + pos.position
+				if not keys.w and not keys.s and not keys.a and not keys.d then
+					speed=5
+				end
+				if keys.w then 
+					new = new + workspace.CurrentCamera.CoordinateFrame.lookVector * speed
+					speed=speed+0
+				end
+				if keys.s then 
+					new = new - workspace.CurrentCamera.CoordinateFrame.lookVector * speed
+					speed=speed+0
+				end
+				if keys.d then 
+					new = new * CFrame.new(speed,0,0)
+					speed=speed+0
+				end
+				if keys.a then 
+					new = new * CFrame.new(-speed,0,0)
+					speed=speed+0
+				end
+				if speed>10 then
+					speed=5
+				end
+				pos.position=new.p
+				if keys.w then
+					gyro.cframe = workspace.CurrentCamera.CoordinateFrame*CFrame.Angles(-math.rad(speed*0),0,0)
+				elseif keys.s then
+					gyro.cframe = workspace.CurrentCamera.CoordinateFrame*CFrame.Angles(math.rad(speed*0),0,0)
+				else
+					gyro.cframe = workspace.CurrentCamera.CoordinateFrame
+				end
+			until flying == false
+			if gyro then gyro:Destroy() end
+			if pos then pos:Destroy() end
+			flying=false
+			localplayer.Character.Humanoid.PlatformStand=false
+			speed=10
+		end
+		e1=mouse.KeyDown:connect(function(key)
+			if not torso or not torso.Parent then flying=false e1:disconnect() e2:disconnect() return end
+			if key=="w" then
+				keys.w=true
+			elseif key=="s" then
+				keys.s=true
+			elseif key=="a" then
+				keys.a=true
+			elseif key=="d" then
+				keys.d=true
+			elseif key=="x" then
+				if flying==true then
+					flying=false
+				else
+					flying=true
+					start()
+				end
+			end
+		end)
+		e2=mouse.KeyUp:connect(function(key)
+			if key=="w" then
+				keys.w=false
+			elseif key=="s" then
+				keys.s=false
+			elseif key=="a" then
+				keys.a=false
+			elseif key=="d" then
+				keys.d=false
+			end
+		end)
+		start()
+end)
+
+--[CLICK TP]--
+Section1:NewButton("Click Teleport [Q]", "ButtonInfo", function()
+    plr = game.Players.LocalPlayer
+
+    hum = plr.Character.HumanoidRootPart
+    
+    mouse = plr:GetMouse()
+    
+    
+    
+    mouse.KeyDown:connect(function(key)
+    
+    if key == "q" then
+    
+    if mouse.Target then
+    
+    hum.CFrame = CFrame.new(mouse.Hit.x, mouse.Hit.y + 5, mouse.Hit.z)
+    
+    end
+    
+    end
+    end)
+end)
+
+Section1:NewButton("[FOV] Normal.", "ButtonInfo", function()
+Workspace.CurrentCamera.FieldOfView = 70
+end)
+
+Section1:NewButton("[FOV] 100.", "ButtonInfo", function()
+Workspace.CurrentCamera.FieldOfView = 100
+end)
+
+Section1:NewButton("[FOV] 120.", "ButtonInfo", function()
+Workspace.CurrentCamera.FieldOfView = 120
+end)
+
+Section2:NewButton("LOCK [Q].", "ButtonInfo", function()
+
+--[[
+████████ ██   ██ ██    ██ ███████ ██   ██ ██    ██ 
+   ██    ██   ██ ██    ██ ██      ██  ██   ██  ██  
+   ██    ███████ ██    ██ ███████ █████     ████   
+   ██    ██   ██ ██    ██      ██ ██  ██     ██    
+   ██    ██   ██  ██████  ███████ ██   ██    ██                                               
+]]
+local Settings = {
+    AimLock = {
+        Enabled = true,
+        Aimlockkey = "q",
+        Prediction = 0.135,
+        Aimpart = 'HumanoidRootPart',
+        Notifications = false
+    },
+    Settings = {
+        Thickness = 3.5,
+        Transparency = 1,
+        Color = Color3.fromRGB(153, 50, 204),
+        FOV = true
+    }
+
+}
+
+local CurrentCamera = game:GetService("Workspace").CurrentCamera
+local Inset = game:GetService("GuiService"):GetGuiInset().Y
+local RunService = game:GetService("RunService")
+
+local Mouse = game.Players.LocalPlayer:GetMouse()
+local LocalPlayer = game.Players.LocalPlayer
+
+local Line = Drawing.new("Line")
+local Circle = Drawing.new("Circle")
+
+local Plr
+
+Mouse.KeyDown:Connect(function(KeyPressed)
+    if KeyPressed == (Settings.AimLock.Aimlockkey) then
+        if Settings.AimLock.Enabled == true then
+            Settings.AimLock.Enabled = false
+            if Settings.AimLock.Notifications == true then
+                Plr = FindClosestPlayer()
+                game.StarterGui:SetCore("SendNotification", {
+                    Title = "Private",
+                    Text = "Unlocked"
+                })
+            end
+        else
+            Plr = FindClosestPlayer()
+            Settings.AimLock.Enabled = true
+            if Settings.AimLock.Notifications == true then
+                game.StarterGui:SetCore("SendNotification", {
+                    Title = "Private",
+                    Text = "Locked On :  " .. tostring(Plr.Character.Humanoid.DisplayName)
+                })
+            end
+        end
+    end
+end)
+
+function FindClosestPlayer()
+    local ClosestDistance, ClosestPlayer = math.huge, nil;
+    for _, Player in next, game:GetService("Players"):GetPlayers() do
+        local ISNTKNOCKED = Player.Character:WaitForChild("BodyEffects")["K.O"].Value ~= true
+        local ISNTGRABBED = Player.Character:FindFirstChild("GRABBING_COINSTRAINT") == nil
+
+        if Player ~= LocalPlayer then
+            local Character = Player.Character
+            if Character and Character.Humanoid.Health > 1 and ISNTKNOCKED and ISNTGRABBED then
+                local Position, IsVisibleOnViewPort = CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart
+                                                                                             .Position)
+                if IsVisibleOnViewPort then
+                    local Distance = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Position.X, Position.Y)).Magnitude
+                    if Distance < ClosestDistance then
+                        ClosestPlayer = Player
+                        ClosestDistance = Distance
+                    end
+                end
+            end
+        end
+    end
+    return ClosestPlayer, ClosestDistance
+end
+
+RunService.Heartbeat:connect(function()
+    if Settings.AimLock.Enabled == true then
+        local Vector = CurrentCamera:WorldToViewportPoint(Plr.Character[Settings.AimLock.Aimpart].Position +
+                                                              (Plr.Character[Settings.AimLock.Aimpart].Velocity *
+                                                              Settings.AimLock.Prediction))
+        Line.Color = Settings.Settings.Color
+        Line.Transparency = Settings.Settings .Transparency
+        Line.Thickness = Settings.Settings .Thickness
+        Line.From = Vector2.new(Mouse.X, Mouse.Y + Inset)
+        Line.To = Vector2.new(Vector.X, Vector.Y)
+        Line.Visible = true
+        Circle.Position = Vector2.new(Mouse.X, Mouse.Y + Inset)
+        Circle.Visible = Settings.Settings.FOV
+        Circle.Thickness = 1.5
+        Circle.Thickness = 2
+        Circle.Radius = 60
+        Circle.Color = Settings.Settings.Color
+    elseif Settings.AimLock.FOV == true then
+        Circle.Visible = true
+    else
+        Circle.Visible = false
+        Line.Visible = false
+    end
+end)
+
+local mt = getrawmetatable(game)
+local old = mt.__namecall
+setreadonly(mt, false)
+mt.__namecall = newcclosure(function(...)
+    local args = {...}
+    if Settings.AimLock.Enabled and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
+        args[3] = Plr.Character[Settings.AimLock.Aimpart].Position +
+                      (Plr.Character[Settings.AimLock.Aimpart].Velocity * Settings.AimLock.Prediction)
+
+        return old(unpack(args))
+    end
+    return old(...)
+end)
+
+end)
+
